@@ -29,6 +29,12 @@ def get_input_and_run_ga():
             frac_elites = float(frac_elites)
             max_gen = raw_input('Enter maximum allowed generation: ')
             max_gen = int(max_gen)
+            max_col_mut = raw_input('Enter maximum allowed columns for mutation: ')
+            max_col_mut = int(max_col_mut)
+            tour_sel_size = raw_input('Enter tournament selection size: ')
+            tour_sel_size = int(tour_sel_size)
+            min_col_accept = raw_input('Enter minimum number of columns for acceptance: ')
+            min_col_accept = int(min_col_accept)
             if num_crossover_rate > 1.0:
                 raise ValueError
             if frac_mutants >= 1.0 or frac_elites >= 1.0:
@@ -70,7 +76,7 @@ def get_input_and_run_ga():
 
     # Fill the non_elite_population with randomly generated oa's
     for i in range(S - S_e - S_m):
-        non_elite_oa.append(brkga_mutation(num_run, 16))
+        non_elite_oa.append(brkga_mutation(num_run, max_col_mut))
 
     # ---- Generation 0 Completed ---- #
 
@@ -83,17 +89,17 @@ def get_input_and_run_ga():
         # Generate mutants
         print "  Mutants introduced in population "
         for i in range(S_m):
-            temp = brkga_mutation(num_run, 16)
+            temp = brkga_mutation(num_run, max_col_mut)
             non_elite_oa.append(temp)
             print temp.string + ' ' + str(temp.get_fitness_value())
 
         # Perform Crossover
         print "  Successful crossovers "
         for i in range(2*(S - S_m - S_e)):
-            oa_l = brkga_crossover([random.choice(elite_oa), tournament_selection(non_elite_oa, 4)], num_crossover_rate)
+            oa_l = brkga_crossover([random.choice(elite_oa), tournament_selection(non_elite_oa, tour_sel_size)], num_crossover_rate)
 
             for gen_oa in oa_l:
-                if is_not_subset(elite_oa, gen_oa) and gen_oa.array.shape[1] >= 5:
+                if is_not_subset(elite_oa, gen_oa) and gen_oa.array.shape[1] >= min_col_accept:
                     eq = all_equal_set(non_elite_oa, gen_oa)
                     if not eq:
                         non_elite_oa.append(gen_oa)
