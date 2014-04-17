@@ -1,0 +1,7 @@
+PMX Crossover [13]
+The subsequence swap operator [15]
+The subsequence chunk operator [16]
+Other subsequence operator [7]
+Edge recombinations [33]
+the ARGOT strategy [28]
+Forcing [25]
