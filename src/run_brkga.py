@@ -4,7 +4,7 @@ from os.path import isfile, join
 from numpy import matrix
 from OA import OA
 from mutation import brkga_mutation
-from crossover import one_point_crossover
+from mutation import sequencer_mutation
 from crossover import brkga_crossover
 from collections import Counter
 
@@ -35,6 +35,12 @@ def get_input_and_run_ga():
             tour_sel_size = int(tour_sel_size)
             min_col_accept = raw_input('Enter minimum number of columns for acceptance: ')
             min_col_accept = int(min_col_accept)
+            sequencer_rate = raw_input('Enter sequencer mutation rate: ')
+            sequencer_rate = float(sequencer_rate)
+            initial_seq_mult = raw_input('Enter initial sequencer count: ')
+            initial_seq_mult = int(initial_seq_mult)
+            growth_rate = raw_input('Enter sequencer mutation count growth rate: ')
+            growth_rate = float(growth_rate)
             if num_crossover_rate > 1.0:
                 raise ValueError
             if frac_mutants >= 1.0 or frac_elites >= 1.0:
@@ -93,6 +99,17 @@ def get_input_and_run_ga():
             non_elite_oa.append(temp)
             print temp.string + ' ' + str(temp.get_fitness_value())
 
+        # Apply sequencer mutation
+        seq_mult = int (initial_seq_mult * pow((1 + growth_rate), current_gen))
+        sel_seq_oa_idx = tournament_selection(non_elite_oa, tour_sel_size, 1)
+        
+        for i in range(seq_mult):
+            seq_oa = sequencer_mutation(non_elite_oa[sel_seq_oa_idx], sequencer_rate)
+            if seq_oa:
+                print 'HIT with sequencer mutation'
+                del non_elite_oa[sel_seq_oa_idx]
+                non_elite_oa.insert(sel_seq_oa_idx, seq_oa)
+
         # Perform Crossover
         print "  Successful crossovers "
         for i in range(2*(S - S_m - S_e)):
@@ -122,7 +139,9 @@ def get_input_and_run_ga():
             print i.string + ' ' + str(i.get_fitness_value())
 
         if current_gen == max_gen:
-            goto_next_gen = False
+            cont = raw_input('Continue with next generation (Enter N for No): ')
+            if cont == "N":
+                goto_next_gen = False
             for i in non_elite_oa:
                 dump_oa_to_file(i)
 
@@ -140,15 +159,21 @@ def is_not_subset(oa_list, oa):
             break
     return accept_flag
 
-def tournament_selection(oa_list, tour_size):
-    ''' Implements a tournament selection for a list of oa's returns one oa '''
-    oa = random.choice(oa_list)
+def tournament_selection(oa_list, tour_size, ret_type=0):
+    ''' Implements a tournament selection for a list of oa's returns one oa. If 0 return OA else return its index '''
+    oa_idx = random.randint(0, len(oa_list) - 1)
+    oa = oa_list[oa_idx]
     
     for i in range(tour_size - 1):
-        temp = random.choice(oa_list)
+        temp_idx = random.randint(0, len(oa_list) - 1)
+        temp = oa_list[temp_idx]
         if oa.get_fitness_value() > temp.get_fitness_value():
             oa = temp
-    return oa
+            oa_idx = temp_idx
+    if ret_type == 0:
+        return oa
+    else:
+        return oa_idx
 
 
 def all_equal_set(oa_list, oa):
