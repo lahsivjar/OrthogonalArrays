@@ -102,6 +102,9 @@ def get_input_and_run_ga():
         # Apply sequencer mutation
         seq_mult = int (initial_seq_mult * pow((1 + growth_rate), current_gen))
         sel_seq_oa_idx = tournament_selection(non_elite_oa, tour_sel_size, 1)
+
+        if seq_mult > 1000:
+            seq_mult = 1000
         
         for i in range(seq_mult):
             seq_oa = sequencer_mutation(non_elite_oa[sel_seq_oa_idx], sequencer_rate)
