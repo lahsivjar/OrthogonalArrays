@@ -142,6 +142,8 @@ def get_input_and_run_ga():
             cont = raw_input('Continue with next generation (Enter N for No): ')
             if cont == "N":
                 goto_next_gen = False
+            else:
+                max_gen += 10
             for i in non_elite_oa:
                 dump_oa_to_file(i)
 
