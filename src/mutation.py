@@ -10,27 +10,34 @@ from fitness import compute_del
 import random
 
 
-def sequencer_mutation(oa, sequencer_rate=0.5, multiplicity=10):
-    ''' Move towards a more fit OA by first randomly selecting a factor then shuffleing it to make it better '''
+def sequencer_mutation(oa, sequencer_rate=0.5):
+    ''' Swap two elements from a randomly selected column if not successful swapping return False '''
 
     if oa.get_fitness_value() < 0.1:
-        return oa
+        return False
+    
+    ar = matrix(oa.array)
+    prob = random.random()
+    if prob < sequencer_rate:
+        # Randomly select a column
+        c = random.randint(0, ar.shape[1] - 1)
 
-    ar = oa.array
-    ret = oa
-    for i in range(ar.shape[1]):
-        prob = random.random()
-        if prob < sequencer_rate:
-            temp = ar[:, i].tolist()
-            fit_val = oa.get_fitness_value()
-            for j in range(multiplicity):
-                random.shuffle(temp)
-                ar[:, i] = matrix(temp)
-                if fit_val > OA(oa.string, ar).get_fitness_value():
-                    ret = OA(oa.string, ar)
-                    fit_val = ret.get_fitness_value()
+        # Randomly select two indexes in the column
+        idx1 = random.randint(0, oa.runs - 1)
+        idx2 = random.randint(0, oa.runs - 1)
 
-    return ret
+        # Swap values at indexes and return the new oa if it is more fit else return False
+        temp = ar[:, c].tolist()
+        temp_st = temp[idx1]
+        temp[idx1] = temp[idx2]
+        temp[idx2] = temp_st
+
+        ar[:, c] = matrix(temp)
+        tempoa = OA(oa.string, ar)
+        if tempoa.get_fitness_value() < oa.get_fitness_value():
+            return tempoa
+
+    return False
 
 def mutation_t1_1(oa, mutation_rate1_1, T=10):
     ''' Take a OA and perform some interchange operations to minimize difference between J2 and lower optimal '''
@@ -148,12 +155,15 @@ def brkga_mutation(runsize, num_col=4):
 ##    print asf.get_fitness_value()
 ##print asf.string
        
-##c = OA('12,3^1,2^4', '0, 0, 1, 0, 1; 0, 1, 0, 0, 1; 0, 0, 1, 1, 0; 0, 1, 0, 1, 0; 1, 0, 0, 0, 0; 1, 1, 1, 0, 0; 1, 0, 1, 1, 1; 1, 1, 0, 1, 1; 2, 0, 0, 1, 0; 2, 1, 1, 0, 0; 2, 0, 0, 0, 1; 2, 1, 1, 1, 1')
+##c = OA('12,3^1,2^4', '1, 0, 0, 0, 0; 0, 1, 1, 0, 1; 0, 0, 1, 1, 1; 0, 1, 0, 1, 0; 0, 0, 0, 0, 0; 1, 1, 1, 0, 0; 1, 0, 1, 1, 1; 1, 1, 0, 1, 1; 2, 0, 0, 1, 0; 2, 1, 1, 0, 0; 2, 0, 0, 0, 1; 2, 1, 1, 1, 1')
 ##print c.get_fitness_value()
 ##print c.array
-##ll = sequencer_mutation(c, 1, 100)
-##print ll.get_fitness_value()
-##print ll.array
+##for i in range(100):
+##    t = sequencer_mutation(c, 1)
+##    if t:
+##        c = t
+##        print 'Success at ' + str(i) + ' ' + str(t.get_fitness_value())
+##        print t.array
 ##mutation_t1_1(c, 0.2)
 ##print c.string
 ##print c.array
