@@ -69,30 +69,15 @@ def mutation_t1_1(oa, mutation_rate1_1, T=10):
                 switch_2 = b
 
 
-def mutation_t1(oa, mutation_rate1=0.1):
+def mutation_t1(oa, mutation_rate1=0.7):
     ''' Return a new OA with a column from old OA and swaping its values '''
-    ### NOT FOUND TO BE VERY EFFECTIVE ###
-    
-################    # This does type 1 mutation with probablity mutation_rate1 for all the columns of array
-################    ar = matrix(oa.array)
-################    for i in range(ar.shape[1]):
-################        prob = random.random()
-################        if prob < mutation_rate1:
-################            temp = ar[:, i].tolist()
-################            random.shuffle(temp)
-################            ar[:, i] = matrix(temp)
+    # It is same as sequencer_mutation
 
-
-    # This does type 1 mutation with probablity mutation_rate1 for only one randomly selected column
-    ar = matrix(oa.array)
-    prob = random.random()
-    if prob < mutation_rate1:
-        idx = random.randint(0, ar.shape[1] - 1)
-        temp = ar[:, idx].tolist()
-        random.shuffle(temp)
-        ar[:, idx] = matrix(temp)
-
-    return OA(oa.string, ar)
+    temp = sequencer_mutation(oa, mutation_rate1)
+    if temp:
+        return temp
+    else:
+        return oa
 
 def mutation_t2(oa, mutation_rate2=0.6):
     ''' Create a new OA with all old plus a new factor with some randomly chosen levels'''
