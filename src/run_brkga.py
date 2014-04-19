@@ -8,7 +8,6 @@ from mutation import sequencer_mutation
 from crossover import brkga_crossover
 from collections import Counter
 
-import os
 import re
 import random
 import utilities as util
@@ -138,7 +137,7 @@ def get_input_and_run_ga():
         print "  Final members "
         for i in non_elite_oa:
             if i.get_fitness_value() < 0.1:
-                dump_oa_to_file(i)
+                util.dump_oa_to_file(i)
             print i.string + ' ' + str(i.get_fitness_value())
 
         if current_gen == max_gen:
@@ -148,7 +147,7 @@ def get_input_and_run_ga():
             else:
                 max_gen += 10
             for i in non_elite_oa:
-                dump_oa_to_file(i)
+                util.dump_oa_to_file(i)
 
 def is_not_subset(oa_list, oa):
     ''' Returns true if oa is not a subset of any oa in oa_list'''
@@ -196,11 +195,7 @@ def all_equal_set(oa_list, oa):
 
     return ret
 
-def dump_oa_to_file(oa):
-    dmp_path = os.path.join(util.module_path(), "..\dump")
-    oa.print_array(os.path.join(dmp_path, oa.string))
-
 if __name__ == '__main__':
-    data_path = os.path.join(util.module_path(), "..\data")
+    data_path = join(util.module_path(), "..\data")
     
     get_input_and_run_ga()

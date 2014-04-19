@@ -1,5 +1,6 @@
 import os
 import sys
+import utilities as util
 
 
 def we_are_frozen():
@@ -29,3 +30,7 @@ def remove_duplicates(fact):
         if i not in fact_set:
             yield i
             fact_set.add(i)
+
+def dump_oa_to_file(oa):
+    dmp_path = os.path.join(util.module_path(), "..\dump")
+    oa.print_array(os.path.join(dmp_path, oa.string))
