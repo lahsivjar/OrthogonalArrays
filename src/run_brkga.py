@@ -40,6 +40,8 @@ def get_input_and_run_ga():
             initial_seq_mult = int(initial_seq_mult)
             growth_rate = raw_input('Enter sequencer mutation count growth rate: ')
             growth_rate = float(growth_rate)
+            seq_mult_max = raw_input('Enter maximum sequencer multiplicator value: ')
+            seq_mult_max = int(seq_mult_max)
             if num_crossover_rate > 1.0:
                 raise ValueError
             if frac_mutants >= 1.0 or frac_elites >= 1.0:
@@ -102,8 +104,8 @@ def get_input_and_run_ga():
         seq_mult = int (initial_seq_mult * pow((1 + growth_rate), current_gen))
         sel_seq_oa_idx = tournament_selection(non_elite_oa, tour_sel_size, 1)
 
-        if seq_mult > 1000:
-            seq_mult = 1000
+        if seq_mult > seq_mult_max:
+            seq_mult = seq_mult_max
         
         for i in range(seq_mult):
             seq_oa = sequencer_mutation(non_elite_oa[sel_seq_oa_idx], sequencer_rate)
