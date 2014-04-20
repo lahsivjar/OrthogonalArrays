@@ -1,7 +1,5 @@
 import os
 import sys
-import utilities as util
-
 
 def we_are_frozen():
     # All of the modules are built-in to the interpreter, e.g., by py2exe
@@ -32,5 +30,5 @@ def remove_duplicates(fact):
             fact_set.add(i)
 
 def dump_oa_to_file(oa):
-    dmp_path = os.path.join(util.module_path(), "..\dump")
+    dmp_path = os.path.join(module_path(), "..\dump")
     oa.print_array(os.path.join(dmp_path, oa.string))
