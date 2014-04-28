@@ -253,7 +253,7 @@ class Basic_Gui(Frame):
                 oa1 = mutation_t2(oa1, num_mutation_rate2)
                 oa2 = mutation_t2(oa2, num_mutation_rate2)
 
-            # Perform check to see if oa1 and oa2 are eligible to gain spot in population
+            # Perform check to see if oa1 and oa2 are eligible to gain spot in population and add if eligible
             self.check_eligible([oa1, oa2], initial_oa_population, initial_population_size, num_population)
 
             print "Current gen: " + str(current_generation) + ' :: ' + 'Total_pop_size: ' + str(len(initial_oa_population))
@@ -277,8 +277,8 @@ class Basic_Gui(Frame):
         
 
     def check_eligible(self, oa, population, initial_population, max_population):
-        ''' Check if 2 oa's given by a list are eligible for getting accepted in current_population '''
-        # Return the index at which to put the oa if index = -1 then don't put it in population
+        ''' Check if 2 oa's given by a list are eligible for getting accepted in current_population and add if eligible'''
+
         max_fit = population[-1].get_fitness_value()
         current_population = len(population)
         for i in oa:
