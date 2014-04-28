@@ -270,7 +270,7 @@ class Basic_Gui(Frame):
 
             # Update current_generation
             current_generation += 1
-            time.sleep(0.05)
+            time.sleep(0.01)
 
         # Dump all information to a dump file
         self.dump_info(initial_oa_population)
