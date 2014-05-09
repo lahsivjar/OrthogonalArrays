@@ -16,7 +16,7 @@ def run_seq_mut():
             oa_name = raw_input('Enter oa name: ')
             count = raw_input('Enter number of times to apply seq mutation: ')
             count = int(count)
-            path += oa_name
+            path += oa_name + '.csv'
             path = join(util.module_path(), path)
             if not isfile(path):
                 raise ValueError
