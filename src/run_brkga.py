@@ -42,6 +42,8 @@ def get_input_and_run_ga():
             growth_rate = float(growth_rate)
             seq_mult_max = raw_input('Enter maximum sequencer multiplicator value: ')
             seq_mult_max = int(seq_mult_max)
+            if num_run == 0:
+                raise ValueError
             if num_crossover_rate > 1.0:
                 raise ValueError
             if frac_mutants >= 1.0 or frac_elites >= 1.0:
@@ -83,7 +85,11 @@ def get_input_and_run_ga():
 
     # Fill the non_elite_population with randomly generated oa's
     for i in range(S - S_e - S_m):
-        non_elite_oa.append(brkga_mutation(num_run, max_col_mut))
+        if max_col_mut > 5:
+            temp_count = random.randint(7, max_col_mut)
+        else:
+            temp_count = max_col_mut
+        non_elite_oa.append(brkga_mutation(num_run, temp_count))
 
     # ---- Generation 0 Completed ---- #
 
@@ -133,7 +139,7 @@ def get_input_and_run_ga():
                                 print gen_oa.string + ' ' + str(gen_oa.get_fitness_value())
 
         non_elite_oa.sort(key = lambda x : x.get_fitness_value())
-        non_elite_oa = non_elite_oa[: S - S_e]
+        non_elite_oa = non_elite_oa[: S - S_e - S_m]
         current_gen += 1
 
         print "  Final members "
@@ -147,7 +153,7 @@ def get_input_and_run_ga():
             if cont == "N":
                 goto_next_gen = False
             else:
-                max_gen += 10
+                max_gen += 100
             for i in non_elite_oa:
                 util.dump_oa_to_file(i)
 
