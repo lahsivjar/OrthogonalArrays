@@ -238,6 +238,7 @@ class Basic_Gui(Frame):
         ''' Run Genetic Algorithm '''
         current_generation = 0
         while(self.runFlag):
+            print "Undergoing generation: " + str(current_generation)
             # Select two OA's for crossover
             index_1 = random.randint(0, len(initial_oa_population) - 1)
             index_2 = random.randint(0, len(initial_oa_population) - 1)
@@ -246,9 +247,18 @@ class Basic_Gui(Frame):
             [oa1, oa2] = one_point_crossover([initial_oa_population[index_1], initial_oa_population[index_2]], num_crossover_rate)
 
             # After Crossover perform mutation
+            initial_seq_mult = 1
+            growth_rate = 0.04
+            seq_mult_max = 200
+            seq_mult = int (initial_seq_mult * pow((1 + growth_rate), current_generation))
+            if seq_mult > seq_mult_max:
+                seq_mult = seq_mult_max
+
             if num_mutation_rate1 > 0:
-                oa1 = mutation_t1(oa1, num_mutation_rate1)
-                oa2 = mutation_t1(oa2, num_mutation_rate1)
+                for i in range(seq_mult):
+                    oa1 = mutation_t1(oa1, num_mutation_rate1)
+                    oa2 = mutation_t1(oa2, num_mutation_rate1)
+
             if num_mutation_rate2 > 0:
                 oa1 = mutation_t2(oa1, num_mutation_rate2)
                 oa2 = mutation_t2(oa2, num_mutation_rate2)
@@ -261,8 +271,9 @@ class Basic_Gui(Frame):
             for i in initial_oa_population:
                 tapu += ': ' + str(i.get_fitness_value())
             print tapu + '\n'
+            print "Final members"
             for i in initial_oa_population:
-                print i.string + '  :  ' + str(i.get_fitness_value())
+                print i.string + ' ' + str(i.get_fitness_value())
             print "\n\nOA's:\n"
             print oa1.string + '  :  ' + str(oa1.get_fitness_value())
             print oa2.string + '  :  ' + str(oa2.get_fitness_value())
@@ -273,7 +284,7 @@ class Basic_Gui(Frame):
             time.sleep(0.01)
 
         # Dump all information to a dump file
-        self.dump_info(initial_oa_population)
+        self.dump_info(initial_oa_population, initial_population_size)
         
 
     def check_eligible(self, oa, population, initial_population, max_population):
@@ -334,13 +345,13 @@ class Basic_Gui(Frame):
 
         return return_list
 
-    def dump_info(self, population):
+    def dump_info(self, population, size):
         ''' Dump all the GA parameters and current population to a dump file '''
         print "Arrays in population: "
-        for i in population:
-            print "\t" + i.string + " : " + str(i.get_fitness_value())
-            dmp = os.path.join(self.dump_path, i.string)
-            i.print_array(dmp)
+        for i in range(size, len(population)):
+            print "\t" + population[i].string + " : " + str(population[i].get_fitness_value())
+            dmp = os.path.join(self.dump_path, population[i].string)
+            population[i].print_array(dmp)
             
         ######### Also create a function to load dump files ##########
 
