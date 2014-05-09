@@ -2,6 +2,18 @@
 
 from numpy import matrix
 
+def Jn(oa, n):
+    # Calculate the Jn value no lower bound calculated
+    jn = 0
+    for i in range(oa.array.shape[0]):
+        for j in range(i + 1, oa.array.shape[0]):
+            temp = 0
+            for k in range(oa.array.shape[1]):
+                if(oa.array[i, k] == oa.array[j, k]):
+                    temp += 1
+            jn = jn + temp**n
+    return jn
+
 def J2(oa):
     # Calculate the J2 value
     j2 = 0
