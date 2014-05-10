@@ -1,2 +1,5 @@
 # Ignore List
 *.pyc
+
+# Removed dump files
+dump/
