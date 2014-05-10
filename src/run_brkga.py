@@ -1,4 +1,6 @@
 # Running BRKGA without GUI
+# Promethee method
+
 from os import listdir
 from os.path import isfile, join
 from numpy import matrix
