@@ -1,0 +1,5 @@
+# Ignore List
+*.pyc
+
+# Ignore all files in dump folder
+dump/
