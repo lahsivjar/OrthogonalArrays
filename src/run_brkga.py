@@ -75,7 +75,7 @@ def get_input_and_run_ga():
     S_e = len(load_data)
 
     for i in elite_oa:
-        print i.get_fitness_value()
+        print "%0.6f" % i.get_fitness_value()
 
     # Run BRKGA
     # S = Total population, S_e = Elite population, S_m = mutant population
@@ -106,7 +106,7 @@ def get_input_and_run_ga():
         for i in range(S_m):
             temp = brkga_mutation(num_run, max_col_mut)
             non_elite_oa.append(temp)
-            print temp.string + ' ' + str(temp.get_fitness_value())
+            print temp.string + ' ' + "%0.6f" % temp.get_fitness_value()
 
         # Apply sequencer mutation
         seq_mult = int (initial_seq_mult * pow((1 + growth_rate), current_gen))
@@ -132,23 +132,23 @@ def get_input_and_run_ga():
                     eq = all_equal_set(non_elite_oa, gen_oa)
                     if not eq:
                         non_elite_oa.append(gen_oa)
-                        print gen_oa.string + ' ' + str(gen_oa.get_fitness_value())
+                        print gen_oa.string + ' ' + "%0.6f" % gen_oa.get_fitness_value()
                     else:
                         for j in eq:
-                            if gen_oa.get_fitness_value() < non_elite_oa[j].get_fitness_value():
+                            if gen_oa.get_fitness_value() > non_elite_oa[j].get_fitness_value():
                                 del non_elite_oa[j]
                                 non_elite_oa.insert(j, gen_oa)
-                                print gen_oa.string + ' ' + str(gen_oa.get_fitness_value())
+                                print gen_oa.string + ' ' + "%0.6f" % gen_oa.get_fitness_value()
 
-        non_elite_oa.sort(key = lambda x : x.get_fitness_value())
+        non_elite_oa.sort(key = lambda x : x.get_fitness_value(), reverse = True)
         non_elite_oa = non_elite_oa[: S - S_e - S_m]
         current_gen += 1
 
         print "  Final members "
         for i in non_elite_oa:
-            if i.get_fitness_value() < 0.1:
+            if i.get_fitness_value() == 1.0:
                 util.dump_oa_to_file(i)
-            print i.string + ' ' + str(i.get_fitness_value())
+            print i.string + ' ' + "%0.6f" % i.get_fitness_value() + ' ' + str(i.get_j2_value())
 
         if current_gen == max_gen:
             cont = raw_input('Continue with next generation (Enter N for No): ')
@@ -181,7 +181,7 @@ def tournament_selection(oa_list, tour_size, ret_type=0):
     for i in range(tour_size - 1):
         temp_idx = random.randint(0, len(oa_list) - 1)
         temp = oa_list[temp_idx]
-        if oa.get_fitness_value() > temp.get_fitness_value():
+        if oa.get_fitness_value() < temp.get_fitness_value():
             oa = temp
             oa_idx = temp_idx
     if ret_type == 0:

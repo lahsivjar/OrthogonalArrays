@@ -19,6 +19,7 @@ class OA:
         self.factors = []
         self.string = oa
         self.fitness = -1
+        self.j2 = -1
         
         oa = oa.split(',')
 
@@ -34,12 +35,16 @@ class OA:
         else:
             self.array = array
 
-    def set_fitness_value(self, fit_value):
-        self.fitness = fit_value
+    def set_fitness_value(self, fit_val):
+        self.fitness = fit_val[0]
+        self.j2 = fit_val[1]
 
     def get_fitness_value(self):
         return self.fitness
-            
+
+    def get_j2_value(self):
+        return self.j2
+
     def set_array(self, array):
         '''set the array for a given orthogonal array description'''
         try:
@@ -65,7 +70,7 @@ class OA:
 
     def print_array(self, dest):
         '''Print an orthogonal array, as csv file, to a given destination'''
-        dest += '[' + str(self.get_fitness_value()) + ']'
+        dest += '[' + str(self.get_j2_value()) + ']'
         savetxt(dest + '.csv', self.array, delimiter=',', fmt="%d")
 
 ###### FOR CHECKING ####

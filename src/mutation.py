@@ -34,40 +34,10 @@ def sequencer_mutation(oa, sequencer_rate=0.5):
 
         ar[:, c] = matrix(temp)
         tempoa = OA(oa.string, ar)
-        if tempoa.get_fitness_value() < oa.get_fitness_value():
+        if tempoa.get_fitness_value() > oa.get_fitness_value():
             return tempoa
 
     return False
-
-def mutation_t1_1(oa, mutation_rate1_1, T=10):
-    ''' Take a OA and perform some interchange operations to minimize difference between J2 and lower optimal '''
-    # Find which column to perform this mutation on
-    c = 1
-    # Compute the value of DEL(a, b) for all a, b rows of the selected column
-    temp = oa.array[:, c].tolist()
-    maximum = 0
-    switch_1 = 0
-    switch_2 = 0
-    for a in range(len(temp)):
-        for b in range(a + 1, len(temp)):
-            del_val = 0
-            for j in range(len(temp)):
-                if j != a and j != b and temp[a][0] != temp[b][0]:
-                    if temp[a][0] == temp[j][0]:
-                        temp1 = 1
-                    else:
-                        temp1 = 0
-                    if temp[b][0] == temp[j][0]:
-                        temp2 = 1
-                    else:
-                        temp2 = 0
-                    
-                    del_val += (compute_del(oa, a, j) - compute_del(oa, b, j)) * (temp1 - temp2)
-            if del_val > maximum:
-                maximum = del_val
-                switch_1 = a
-                switch_2 = b
-
 
 def mutation_t1(oa, mutation_rate1=0.7):
     ''' Return a new OA with a column from old OA and swaping its values '''

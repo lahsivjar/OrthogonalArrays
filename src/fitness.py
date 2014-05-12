@@ -14,6 +14,16 @@ def Jn(oa, n):
             jn = jn + temp**n
     return jn
 
+def sat_fit(oa):
+    # Calculate the saturated fitness value
+    s_fit = 0
+    u_lim = oa.runs - 1
+    for i in oa.factors:
+        s_fit += i - 1
+
+    # Return normalized saturated fitness value
+    return s_fit / u_lim
+
 def J2(oa):
     # Calculate the J2 value
     j2 = 0
@@ -37,8 +47,8 @@ def J2(oa):
 
     l = 0.5 * (fact1**2 + fact2 - (n * w**2))
     
-    # Return the fitness value: difference between J2 and Lower Bound
-    return j2 - l
+    # Return normalized fitness value
+    return [l / j2, j2 - l]
 
 def compute_del(oa, i, j):
     if i == j:
