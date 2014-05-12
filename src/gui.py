@@ -1,4 +1,5 @@
 # GUI
+# Not modified for normalized fitness functions
 
 from Tkinter import *
 from os import listdir
