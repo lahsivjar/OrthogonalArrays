@@ -9,6 +9,7 @@ from mutation import brkga_mutation
 from mutation import sequencer_mutation
 from crossover import brkga_crossover
 from collections import Counter
+from fitness import J2
 
 import re
 import random
@@ -93,6 +94,14 @@ def get_input_and_run_ga():
             temp_count = max_col_mut
         non_elite_oa.append(brkga_mutation(num_run, temp_count))
 
+    # Find maximum J2 value for normalization of fitness function
+    max_oa_j2 = max(non_elite_oa, key = lambda x : x.get_j2_value())
+    OA.max_fit = max_oa_j2.get_j2_value()
+
+    # Update the population fitness value
+    for i in non_elite_oa:
+        i.set_fitness_value(J2(i))
+
     # ---- Generation 0 Completed ---- #
 
     goto_next_gen = True
@@ -146,9 +155,9 @@ def get_input_and_run_ga():
 
         print "  Final members "
         for i in non_elite_oa:
-            if i.get_fitness_value() == 1.0:
+            if i.get_j2_value() < 0.1:
                 util.dump_oa_to_file(i)
-            print i.string + ' ' + "%0.6f" % i.get_fitness_value() + ' ' + str(i.get_j2_value())
+            print i.string + ' ' + "%0.6f" % i.get_fitness_value() + ' ' + str(i.get_j2_value()) + ' ' + str(i.get_sat_value())
 
         if current_gen == max_gen:
             cont = raw_input('Continue with next generation (Enter N for No): ')

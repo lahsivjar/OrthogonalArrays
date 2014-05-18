@@ -16,7 +16,7 @@ def Jn(oa, n):
 
 def sat_fit(oa):
     # Calculate the saturated fitness value
-    s_fit = 0
+    s_fit = 0.0
     u_lim = oa.runs - 1
     for i in oa.factors:
         s_fit += i - 1
@@ -48,7 +48,9 @@ def J2(oa):
     l = 0.5 * (fact1**2 + fact2 - (n * w**2))
     
     # Return normalized fitness value
-    return [l / j2, j2 - l]
+    fit_val = j2 - l
+    norm_fit_val = 1 - (fit_val / oa.max_fit)
+    return (norm_fit_val, fit_val)
 
 def compute_del(oa, i, j):
     if i == j:

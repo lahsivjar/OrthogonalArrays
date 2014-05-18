@@ -5,6 +5,7 @@
 from numpy import matrix
 from numpy import savetxt
 from fitness import J2
+from fitness import sat_fit
 
 
 class DimensionError(Exception):
@@ -15,11 +16,14 @@ class DimensionError(Exception):
 
 class OA:
 
+    max_fit = -1
+
     def __init__(self, oa, array=None):
         self.factors = []
         self.string = oa
         self.fitness = -1
         self.j2 = -1
+        self.sat = -1
         
         oa = oa.split(',')
 
@@ -35,12 +39,18 @@ class OA:
         else:
             self.array = array
 
-    def set_fitness_value(self, fit_val):
-        self.fitness = fit_val[0]
-        self.j2 = fit_val[1]
+    def set_fitness_value(self, f_val):
+        self.fitness = f_val[0]
+        self.j2 = f_val[1]
 
     def get_fitness_value(self):
         return self.fitness
+
+    def set_sat_value(self, s_val):
+        self.sat = s_val
+
+    def get_sat_value(self):
+        return self.sat
 
     def get_j2_value(self):
         return self.j2
@@ -67,6 +77,7 @@ class OA:
             return
         self.factors = (self.array.max(axis = 0) + 1).tolist()[0]
         self.set_fitness_value(J2(self))
+        self.set_sat_value(sat_fit(self))
 
     def print_array(self, dest):
         '''Print an orthogonal array, as csv file, to a given destination'''
