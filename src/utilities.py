@@ -29,6 +29,26 @@ def remove_duplicates(fact):
             yield i
             fact_set.add(i)
 
+def binary_search(lst, start_idx, end_idx, key):
+    # Binary search based on fit value in lst with start and end indexes 
+    # Return position index if found and insert position if not found
+    if key <= lst[end_idx].get_fitness_value():
+        return end_idx + 1
+
+    if key >= lst[start_idx].get_fitness_value():
+        return start_idx
+
+    if end_idx - start_idx == 1:
+        return end_idx
+
+    mid = (int)((start_idx + end_idx) / 2)
+
+    if (key <= lst[mid].get_fitness_value()):
+        return binary_search(lst, mid, end_idx, key)
+    elif (key > lst[mid].get_fitness_value()):
+        return binary_search(lst, start_idx, mid, key)
+
+
 def dump_oa_to_file(oa):
     dmp_path = os.path.join(module_path(), "..\dump")
     oa.print_array(os.path.join(dmp_path, oa.string))

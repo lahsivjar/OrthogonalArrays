@@ -12,6 +12,7 @@ from collections import Counter
 from fitness import J2
 
 import re
+import time
 import random
 import utilities as util
 
@@ -102,6 +103,9 @@ def get_input_and_run_ga():
     for i in non_elite_oa:
         i.set_fitness_value(J2(i))
 
+    # Sort the population
+    non_elite_oa.sort(key = lambda x : x.get_fitness_value(), reverse = True)
+
     # ---- Generation 0 Completed ---- #
 
     goto_next_gen = True
@@ -114,7 +118,7 @@ def get_input_and_run_ga():
         print "  Mutants introduced in population "
         for i in range(S_m):
             temp = brkga_mutation(num_run, max_col_mut)
-            non_elite_oa.append(temp)
+            non_elite_oa.insert(util.binary_search(non_elite_oa, 0, len(non_elite_oa) - 1, temp.get_fitness_value()), temp)
             print temp.string + ' ' + "%0.6f" % temp.get_fitness_value()
 
         # Apply sequencer mutation
@@ -123,13 +127,20 @@ def get_input_and_run_ga():
 
         if seq_mult > seq_mult_max:
             seq_mult = seq_mult_max
+
+        temp = non_elite_oa[sel_seq_oa_idx]
+        changed_flg = False
         
         for i in range(seq_mult):
-            seq_oa = sequencer_mutation(non_elite_oa[sel_seq_oa_idx], sequencer_rate)
+            seq_oa = sequencer_mutation(temp, sequencer_rate)
             if seq_oa:
-                print 'HIT with sequencer mutation'
-                del non_elite_oa[sel_seq_oa_idx]
-                non_elite_oa.insert(sel_seq_oa_idx, seq_oa)
+                print 'HIT with sequencer mutation at index: ' + str(sel_seq_oa_idx)
+                temp = seq_oa
+                changed_flg = True
+
+        if changed_flg:
+            del non_elite_oa[sel_seq_oa_idx]
+            non_elite_oa.insert(util.binary_search(non_elite_oa, 0, len(non_elite_oa) - 1, temp.get_fitness_value()), temp)
 
         # Perform Crossover
         print "  Successful crossovers "
@@ -140,16 +151,17 @@ def get_input_and_run_ga():
                 if is_not_subset(elite_oa, gen_oa) and gen_oa.array.shape[1] >= min_col_accept:
                     eq = all_equal_set(non_elite_oa, gen_oa)
                     if not eq:
-                        non_elite_oa.append(gen_oa)
-                        print gen_oa.string + ' ' + "%0.6f" % gen_oa.get_fitness_value()
+                        ins_idx = util.binary_search(non_elite_oa, 0, len(non_elite_oa) - 1, gen_oa.get_fitness_value())
+                        if ins_idx < len(non_elite_oa):
+                            non_elite_oa.insert(ins_idx, gen_oa)
+                            print gen_oa.string + ' ' + "%0.6f" % gen_oa.get_fitness_value()
                     else:
                         for j in eq:
                             if gen_oa.get_fitness_value() > non_elite_oa[j].get_fitness_value():
                                 del non_elite_oa[j]
-                                non_elite_oa.insert(j, gen_oa)
+                                non_elite_oa.insert(util.binary_search(non_elite_oa, 0, len(non_elite_oa) - 1, gen_oa.get_fitness_value()), gen_oa)
                                 print gen_oa.string + ' ' + "%0.6f" % gen_oa.get_fitness_value()
 
-        non_elite_oa.sort(key = lambda x : x.get_fitness_value(), reverse = True)
         non_elite_oa = non_elite_oa[: S - S_e - S_m]
         current_gen += 1
 
@@ -216,5 +228,4 @@ def all_equal_set(oa_list, oa):
 
 if __name__ == '__main__':
     data_path = join(util.module_path(), "..\data")
-    
     get_input_and_run_ga()
