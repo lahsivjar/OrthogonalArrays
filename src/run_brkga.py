@@ -114,13 +114,6 @@ def get_input_and_run_ga():
     while(goto_next_gen):
         print " Undergoing generation " + str(current_gen)
         
-        # Generate mutants
-        print "  Mutants introduced in population "
-        for i in range(S_m):
-            temp = brkga_mutation(num_run, max_col_mut)
-            non_elite_oa.insert(util.binary_search(non_elite_oa, 0, len(non_elite_oa) - 1, temp.get_fitness_value()), temp)
-            print temp.string + ' ' + "%0.6f" % temp.get_fitness_value()
-
         # Apply sequencer mutation
         seq_mult = int (initial_seq_mult * pow((1 + growth_rate), current_gen))
         sel_seq_oa_idx = tournament_selection(non_elite_oa, tour_sel_size, 1)
@@ -133,27 +126,35 @@ def get_input_and_run_ga():
         
         for i in range(seq_mult):
             seq_oa = sequencer_mutation(temp, sequencer_rate)
-            if seq_oa:
-                print 'HIT with sequencer mutation at index: ' + str(sel_seq_oa_idx)
-                temp = seq_oa
+            if (sequencer_mutation(temp, sequencer_rate)):
+                print 'HIT with sequencer mutation at index: ' + str(sel_seq_oa_idx) + ' ' + str(temp.get_j2_value())
                 changed_flg = True
 
         if changed_flg:
             del non_elite_oa[sel_seq_oa_idx]
             non_elite_oa.insert(util.binary_search(non_elite_oa, 0, len(non_elite_oa) - 1, temp.get_fitness_value()), temp)
 
+        # Generate mutants
+        print "  Mutants introduced in population "
+        for i in range(S_m):
+            temp = brkga_mutation(num_run, max_col_mut)
+            non_elite_oa.insert(util.binary_search(non_elite_oa, 0, len(non_elite_oa) - 1, temp.get_fitness_value()), temp)
+            print temp.string + ' ' + "%0.6f" % temp.get_fitness_value()
+
         # Perform Crossover
         print "  Successful crossovers "
-        for i in range(2*(S - S_m - S_e)):
+        for i in range(S - S_m - S_e):
             oa_l = brkga_crossover([random.choice(elite_oa), tournament_selection(non_elite_oa, tour_sel_size)], num_crossover_rate)
 
             for gen_oa in oa_l:
                 if is_not_subset(elite_oa, gen_oa) and gen_oa.array.shape[1] >= min_col_accept:
                     eq = all_equal_set(non_elite_oa, gen_oa)
                     if not eq:
+                        st = time.time()
                         ins_idx = util.binary_search(non_elite_oa, 0, len(non_elite_oa) - 1, gen_oa.get_fitness_value())
                         if ins_idx < len(non_elite_oa):
                             non_elite_oa.insert(ins_idx, gen_oa)
+                            print "Insertion time" + str(time.time() - st)
                             print gen_oa.string + ' ' + "%0.6f" % gen_oa.get_fitness_value()
                     else:
                         for j in eq:
@@ -176,7 +177,7 @@ def get_input_and_run_ga():
             if cont == "N":
                 goto_next_gen = False
             else:
-                max_gen += 100
+                max_gen += 50
             for i in non_elite_oa:
                 util.dump_oa_to_file(i)
 

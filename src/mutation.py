@@ -5,15 +5,16 @@ from numpy import concatenate
 from OA import OA
 from utilities import find_levels
 from utilities import remove_duplicates
-from fitness import compute_del
+from fitness import update_j2
 
 import random
 
 
 def sequencer_mutation(oa, sequencer_rate=0.5):
-    ''' Swap two elements from a randomly selected column if not successful swapping return False '''
+    ''' Swap two elements from a randomly selected column if not successful swapping return False
+        if successful it returns true and the improved oa'''
 
-    if oa.get_fitness_value() < 0.1:
+    if oa.get_j2_value() < 0.1:
         return False
     
     ar = matrix(oa.array)
@@ -26,16 +27,19 @@ def sequencer_mutation(oa, sequencer_rate=0.5):
         idx1 = random.randint(0, oa.runs - 1)
         idx2 = random.randint(0, oa.runs - 1)
 
-        # Swap values at indexes and return the new oa if it is more fit else return False
-        temp = ar[:, c].tolist()
-        temp_st = temp[idx1]
-        temp[idx1] = temp[idx2]
-        temp[idx2] = temp_st
+        # Check if new oa is better
+        diff = update_j2(oa, c, idx1, idx2)
 
-        ar[:, c] = matrix(temp)
-        tempoa = OA(oa.string, ar)
-        if tempoa.get_fitness_value() > oa.get_fitness_value():
-            return tempoa
+        if (oa.get_j2_value() - diff[1] > 0):
+            # Update the new oa
+            temp = oa.array[idx1, c]
+            oa.array[idx1, c] = oa.array[idx2, c]
+            oa.array[idx2, c] = temp
+
+            # Update its fitness value
+            oa.set_fitness_value(diff)
+
+            return True
 
     return False
 

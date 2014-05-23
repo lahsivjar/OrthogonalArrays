@@ -29,11 +29,7 @@ def J2(oa):
     j2 = 0
     for i in range(oa.array.shape[0]):
         for j in range(i + 1, oa.array.shape[0]):
-            temp = 0
-            for k in range(oa.array.shape[1]):
-                if(oa.array[i, k] == oa.array[j, k]):
-                    temp += 1
-            j2 = j2 + temp**2
+            j2 = j2 + compute_del(oa, i, j)**2
 
     # Calculate the lower bound taking weights as 1 for all factors
     w = len(oa.factors)
@@ -61,3 +57,23 @@ def compute_del(oa, i, j):
             temp += 1
 
     return temp
+
+def compute_del_ele(a, b):
+    if a == b:
+        return 1
+    else:
+        return 0
+
+def update_j2(oa, c, a, b):
+    # oa is the array in which swapping has to occur
+    # This function should be consistent with J2(oa)
+    # c is the column index, a and b are the rows swapped in c
+    ret = 0
+    for j in range(oa.array.shape[0]):
+        if (j != a and j != b):
+            temp = compute_del_ele(oa.array[a, c], oa.array[j, c]) - compute_del_ele(oa.array[b, c], oa.array[j, c])
+            if temp:
+                ret += ((compute_del(oa, a, j) - compute_del(oa, b, j) - temp) * temp)
+    new_j2 = oa.get_j2_value() - 2 * ret
+
+    return (1 - (new_j2 / oa.max_fit), new_j2)
