@@ -109,36 +109,3 @@ def brkga_mutation(runsize, num_col=4):
 
     return new_oa
 
-##for i in range(100):
-##    asf = brkga_mutation(72)
-##    print asf.get_fitness_value()
-##print asf.string
-       
-##c = OA('12,3^1,2^4', '1, 0, 0, 0, 0; 0, 1, 1, 0, 1; 0, 0, 1, 1, 1; 0, 1, 0, 1, 0; 0, 0, 0, 0, 0; 1, 1, 1, 0, 0; 1, 0, 1, 1, 1; 1, 1, 0, 1, 1; 2, 0, 0, 1, 0; 2, 1, 1, 0, 0; 2, 0, 0, 0, 1; 2, 1, 1, 1, 1')
-##print c.get_fitness_value()
-##print c.array
-##for i in range(100):
-##    t = sequencer_mutation(c, 1)
-##    if t:
-##        c = t
-##        print 'Success at ' + str(i) + ' ' + str(t.get_fitness_value())
-##        print t.array
-##mutation_t1_1(c, 0.2)
-##print c.string
-##print c.array
-##print c.get_fitness_value()
-##d = mutation_t1(c, 1)
-##print c.factors
-##print d.array
-##print c.get_fitness_value()
-##print d.get_fitness_value()
-
-
-##d = mutation_t2(c, 0.5)
-##print c.array
-##print c.factors
-##print d.string
-##print d.array
-##print d.get_fitness_value()
-##print d.factors
-##print d.string

@@ -1,11 +1,10 @@
-### Functions for different type of crossover techniques for Orthogonal Arrays
+# Functions for different type of crossover techniques for Orthogonal Arrays
 
 from numpy import concatenate
 from OA import OA
 from utilities import remove_duplicates
 
 import random
-
 
 def one_point_crossover(oa, crossover_rate=0.7):
     prob = random.random()
@@ -80,40 +79,7 @@ def brkga_crossover(oa, crossover_rate=0.7):
     ret.append(OA(temp, child))
     return ret
         
-
-        
 ###### For Checking ####
-##a = OA('4,2^4', '1, 2, 3, 4; 1, 2, 13, 14; 21, 22, 23, 24; 31, 32, 33, 34')
-##b = OA('4,3^5', '4, 5, 6, 7, 45; 14, 15, 16, 17, 31; 24, 25, 26, 27, 2; 34, 35, 36, 37, 7')
-##print a.array
-##print b.array
-##c = brkga_crossover([a, b], 1)
-##print c.array
-##print c.string
-##d = brkga_crossover([a, b], 0)
-##print d.array
-##print d.string
-##one_point_crossover([a, b], 1)
 ##d = OA('12,3^1,2^4', '0, 0, 1, 0, 1; 1, 0, 0, 0, 1; 0, 0, 1, 1, 0; 1, 0, 0, 1, 0; 0, 1, 0, 0, 0; 1, 1, 1, 0, 0; 0, 1, 1, 1, 1; 1, 1, 0, 1, 1; 0, 2, 0, 1, 0; 1, 2, 1, 0, 0; 0, 2, 0, 0, 1; 1, 2, 1, 1, 1')
-####print a.array
-####print a.factors
-####print b.array
-####print b.factors
-####lolo = brkga_crossover([b, a])
-####print lolo.array
-####print lolo.factors
-####print lolo.num_factors
-####print lolo.fitness
-##
-##[m, n] = one_point_crossover([d, d], 1)
-##print m.array
-##print m.get_fitness_value()
-##print n.array
-##print n.get_fitness_value()
-##[m, n] = one_point_crossover([m, n], 1)
-##print m.array
-##print m.get_fitness_value()
-##print n.array
-##print n.get_fitness_value()
-##print d.factors
-##print d.array
+####print d.array
+####print d.factors
