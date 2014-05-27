@@ -50,7 +50,7 @@ def run_seq_mut():
             if (sequencer_mutation(oa, 1)):
                 print 'HIT' + str(oa.get_j2_value())
 
-        print "Execution time: " + str(time.time() - start_time)
+        print "Execution time: " + str(time.time() - start_time) + " seconds"
         cont = raw_input('Enter N to stop else continue again: ')
         if cont == "N":
             cont_flag = False
