@@ -1,5 +1,4 @@
 # Running BRKGA without GUI
-# Promethee method
 
 from os import listdir
 from os.path import isfile, join
@@ -66,6 +65,9 @@ def get_input_and_run_ga():
     
     load_data = [i for i, word in enumerate(all_files) if re.search('^' + str(num_run) + ',' + '.*', word)]
 
+    if (len(load_data) == 0):
+        raise Exception('Invalid run size')
+
     for i in load_data:
         print all_files[i]
         file1 = open(join(data_path, all_files[i]), 'r')
@@ -110,7 +112,10 @@ def get_input_and_run_ga():
 
     goto_next_gen = True
     current_gen = 1
-    
+
+    # Set start time
+    start_time = time.time()
+
     while(goto_next_gen):
         print " Undergoing generation " + str(current_gen)
         
@@ -143,18 +148,16 @@ def get_input_and_run_ga():
 
         # Perform Crossover
         print "  Successful crossovers "
-        for i in range(S - S_m - S_e):
+        for i in range(2*(S - S_m - S_e)):
             oa_l = brkga_crossover([random.choice(elite_oa), tournament_selection(non_elite_oa, tour_sel_size)], num_crossover_rate)
 
             for gen_oa in oa_l:
                 if is_not_subset(elite_oa, gen_oa) and gen_oa.array.shape[1] >= min_col_accept:
                     eq = all_equal_set(non_elite_oa, gen_oa)
                     if not eq:
-                        st = time.time()
                         ins_idx = util.binary_search(non_elite_oa, 0, len(non_elite_oa) - 1, gen_oa.get_fitness_value())
                         if ins_idx < len(non_elite_oa):
                             non_elite_oa.insert(ins_idx, gen_oa)
-                            print "Insertion time" + str(time.time() - st)
                             print gen_oa.string + ' ' + "%0.6f" % gen_oa.get_fitness_value()
                     else:
                         for j in eq:
@@ -173,6 +176,7 @@ def get_input_and_run_ga():
             print i.string + ' ' + "%0.6f" % i.get_fitness_value() + ' ' + str(i.get_j2_value()) + ' ' + str(i.get_sat_value())
 
         if current_gen == max_gen:
+            print "Execution time: " + str(time.time() - start_time) + " seconds"
             cont = raw_input('Continue with next generation (Enter N for No): ')
             if cont == "N":
                 goto_next_gen = False
@@ -180,6 +184,8 @@ def get_input_and_run_ga():
                 max_gen += 50
             for i in non_elite_oa:
                 util.dump_oa_to_file(i)
+
+            start_time = time.time()
 
 def is_not_subset(oa_list, oa):
     ''' Returns true if oa is not a subset of any oa in oa_list'''
